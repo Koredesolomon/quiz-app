@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { questions } from "@/utils/quizData";
+import { questions, Question } from "@/utils/quizData"; // Import the type
 
 export default function QuestionPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  // ✅ Fix: Correctly access the current question
-  const questionData = questions[currentQuestionIndex];
+  const questionData: Question = questions[currentQuestionIndex]; // Ensure correct typing
 
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index);

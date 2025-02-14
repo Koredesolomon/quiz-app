@@ -1,24 +1,18 @@
-export const questions = [
+export interface Question {
+  question: string;
+  options: string[];
+  correctAnswer: number; // The index of the correct option
+}
+
+export const questions: Question[] = [
   {
-    id: 1,
-    type: "mcq", // ✅ Add this
     question: "What do plants need for photosynthesis?",
-    options: [
-      "Oxygen & Sugar",
-      "Sunlight, Water & Carbon Dioxide",
-      "Protein & Soil",
-    ],
-    answer: "Sunlight, Water & Carbon Dioxide",
+    options: ["Oxygen & Sugar", "Sunlight, Water & Carbon Dioxide", "Protein & Soil"],
+    correctAnswer: 1, // Index of the correct answer
   },
   {
-    id: 2,
-    type: "mcq", // ✅ Add this
     question: "What is the role of sunlight in photosynthesis?",
-    options: [
-      "It provides energy to make food",
-      "It helps plants absorb water",
-      "It turns leaves green",
-    ],
-    answer: "It provides energy to make food",
+    options: ["It provides energy to make food", "It helps plants absorb water", "It turns leaves green"],
+    correctAnswer: 0,
   },
 ];
