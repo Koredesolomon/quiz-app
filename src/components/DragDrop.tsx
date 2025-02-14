@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
 const terms = [
@@ -43,6 +43,7 @@ export default function DragDrop({ setDragCompleted }: { setDragCompleted: (valu
 
 /* Draggable Term */
 function DraggableItem({ id, text }: { id: string; text: string }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "term",
     item: { id },
@@ -51,9 +52,15 @@ function DraggableItem({ id, text }: { id: string; text: string }) {
     }),
   }));
 
+  useEffect(() => {
+    if (ref.current) {
+      drag(ref.current);
+    }
+  }, [ref, drag]);
+
   return (
     <div
-      ref={drag}
+      ref={ref}
       className={`p-3 bg-purple-600 text-white rounded-lg shadow-md cursor-pointer transition ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
