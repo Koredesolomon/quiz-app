@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Questions } from "@/utils/quizData";
+import { questions } from "@/utils/quizData";
 
 export default function QuestionPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -16,7 +16,7 @@ export default function QuestionPage() {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < Questions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
@@ -53,7 +53,7 @@ export default function QuestionPage() {
         </div>
       )}
 
-      {selectedAnswer !== null && currentQuestionIndex < Questions.length - 1 && (
+      {selectedAnswer !== null && currentQuestionIndex < questions.length - 1 && (
         <button
           onClick={handleNextQuestion}
           className="mt-6 bg-purple-700 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-800 transition"
