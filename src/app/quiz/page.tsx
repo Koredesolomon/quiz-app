@@ -1,82 +1,70 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { questions } from "@/utils/quizData";
-import DragDrop from "@/components/DragDrop";
+import { questions, Question } from "@/utils/quizData";
 
-export default function QuizPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [dragCompleted, setDragCompleted] = useState(false); // For drag-and-drop
-  const router = useRouter();
+export default function QuestionPage() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  const question = questions[currentQuestion];
+  const questionData: Question = questions[currentQuestionIndex];
 
-  const handleOptionClick = (option: string) => {
-    setSelectedOption(option);
+  const handleAnswer = (index: number) => {
+    setSelectedAnswer(index);
+    setIsCorrect(index === questionData.correctAnswer);
   };
 
-  const handleNext = () => {
-    if (question.type === "multiple-choice" && selectedOption === question.answer) {
-      setScore(score + 10);
-    } else if (question.type === "drag-and-drop" && dragCompleted) {
-      setScore(score + 10);
-    }
-
-    setSelectedOption(null);
-    setDragCompleted(false);
-
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      router.push(`/quiz/result?score=${score + (selectedOption === question.answer || dragCompleted ? 10 : 0)}`);
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
-      <h2 className="text-xl font-semibold text-purple-700">Goal: 30 Points</h2>
-      <h2 className="text-xl font-semibold text-gray-700">Current Points: {score}</h2>
-
-      <div className="mt-6 bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h3 className="text-lg font-medium">{question.question}</h3>
-
-        {question.type === "multiple-choice" ? (
-          <div className="mt-4 space-y-2">
-            {question.options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleOptionClick(option)}
-                className={`w-full px-4 py-3 border rounded-lg ${
-                  selectedOption === option
-                    ? option === question.answer
-                      ? "bg-green-200 border-green-500"
-                      : "bg-red-200 border-red-500"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <DragDrop setDragCompleted={setDragCompleted} />
-        )}
+    <div className="flex flex-col items-center justify-center min-h-screen px-6">
+      <h2 className="text-xl font-semibold text-gray-800">{questionData.question}</h2>
+      <div className="mt-4 w-full max-w-md">
+        {questionData.options.map((option, index) => (
+          <button
+            key={index}
+            className={`w-full p-3 my-2 text-lg font-medium border rounded-lg transition ${
+              selectedAnswer !== null
+                ? index === questionData.correctAnswer
+                  ? "bg-green-500 text-white border-green-500"
+                  : index === selectedAnswer
+                  ? "bg-red-500 text-white border-red-500"
+                  : "bg-gray-200 border-gray-300"
+                : "bg-white border-gray-400 hover:bg-gray-100"
+            }`}
+            onClick={() => handleAnswer(index)}
+            disabled={selectedAnswer !== null}
+          >
+            {option}
+          </button>
+        ))}
       </div>
 
-      <button
-        onClick={handleNext}
-        disabled={!selectedOption && !dragCompleted}
-        className={`mt-6 px-6 py-3 rounded-lg text-lg font-semibold transition ${
-          selectedOption || dragCompleted
-            ? "bg-purple-700 text-white hover:bg-purple-800"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        }`}
-      >
-        {currentQuestion < questions.length - 1 ? "Next Question →" : "See Results →"}
-      </button>
+      {selectedAnswer !== null && (
+        <div className={`mt-4 text-lg font-semibold ${isCorrect ? "text-green-600" : "text-red-600"}`}>
+          {isCorrect ? "✅ Right! Well done!" : "❌ Think again!"}
+        </div>
+      )}
+
+      {selectedAnswer !== null && (
+        <p className="mt-2 text-gray-700 text-sm">Correct Answer: {questionData.answer ?? "Not available"}</p>
+      )}
+
+      {selectedAnswer !== null && currentQuestionIndex < questions.length - 1 && (
+        <button
+          onClick={handleNextQuestion}
+          className="mt-6 bg-purple-700 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-800 transition"
+        >
+          Next Question →
+        </button>
+      )}
     </div>
   );
 }
