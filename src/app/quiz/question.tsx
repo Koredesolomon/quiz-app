@@ -8,7 +8,8 @@ export default function QuestionPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  const questionData = Questions[currentQuestionIndex];
+  // ✅ Fix: Correctly access the current question
+  const questionData = questions[currentQuestionIndex];
 
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index);
