@@ -52,11 +52,7 @@ function DraggableItem({ id, text }: { id: string; text: string }) {
     }),
   }));
 
-  useEffect(() => {
-    if (ref.current) {
-      drag(ref.current);
-    }
-  }, [ref, drag]);
+  drag(ref);
 
   return (
     <div
@@ -80,6 +76,7 @@ function DropZone({
   matched: Record<string, boolean>;
   setMatched: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "term",
     drop: (item: { id: string }) => {
@@ -92,9 +89,11 @@ function DropZone({
     }),
   }));
 
+  drop(ref);
+
   return (
     <div
-      ref={drop}
+      ref={ref}
       className={`p-4 border-2 rounded-lg transition ${
         matched[term.id] ? "border-green-500 bg-green-100" : isOver ? "border-blue-500 bg-blue-100" : "border-gray-300"
       }`}
